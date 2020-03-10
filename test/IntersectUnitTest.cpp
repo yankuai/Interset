@@ -1,8 +1,8 @@
 ﻿#include "pch.h"
 #include "CppUnitTest.h"
+#include "../intersect.h"
 #include<set>
-#include "../intersect.cpp"
-
+#include<iostream>
 extern class Line;
 class Point;
 
@@ -92,6 +92,7 @@ namespace IntersectUnitTest
 			Line l(Point(2, 0), Point(2, 1));
 			set<Point> intersections;
 			getIntersection_cl(&intersections, c, l);
+			cout << intersections.size();
 			Assert::AreEqual((int)intersections.size(), 0);
 		}
 		//圆与直线相切
@@ -102,6 +103,7 @@ namespace IntersectUnitTest
 			set<Point> intersections;
 			getIntersection_cl(&intersections, c, l);
 			set<Point>::iterator it = intersections.begin();
+			cout << intersections.size();
 			Assert::AreEqual((int)intersections.size(), 1);
 			Assert::AreEqual(it->first, 1.0);
 			Assert::AreEqual(it->second, 0.0);

@@ -1,18 +1,12 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <sstream>
-#include<vector>
-#include<set>
+#include <vector>
+#include <set>
 #include <string>
-
+#include "intersect.h"
 using namespace std;
 
-enum GType { L, C };
-
-const double eps = 1e-7;
-class Point;
-class Line;
-class Circle;
 int dcmp(double x);
 double sqr(double x);
 double dot(Point a, Point b);
@@ -23,53 +17,26 @@ Point vbase(Circle c, Line l);
 Point prxy(Circle c, Line l);
 int getIntersection_cl(set<Point>* intersections, Circle c, Line l);
 
-class Point : public pair<double, double> {
-public:
-	Point() {}
-	Point(double x, double y) {
-		first = x;
-		second = y;
-	}
-	Point operator - (const Point& p) {
-		return Point(first - p.first, second - p.second);
-	}
-	bool operator ==(const Point& p) {
-		return dcmp(first - p.first) == 0 && dcmp(second - p.second) == 0;
-	}
-	void operator=(const Point& point) {
-		first = point.first;
-		second = point.second;
-	}
-	Point operator/(const double& d) {
-		return Point(first / d, second / d);
-	}
-	//bool operator<(const Point& p)const {
-	//	return first == p.first ? second < p.second : first < p.first;
-	//	return dcmp(first - p.first)==0 ? dcmp(second - p.second) < 0 : dcmp(first - p.first) < 0;
-	//}
-};
-
-class Line {
-public:
-	double a;
-	double b;
-	double c;
-	Point e;
-	Point p1;
-	Point p2;
-
-	Line() {}
-	Line(Point source, Point target);
-	int getIntersection_ll(set<Point>* intersections, Line l1, Line l2);
-	void operator=(const Line& line) {
-		a = line.a;
-		b = line.b;
-		c = line.c;
-		e = line.e;
-		p1 = line.p1;
-		p2 = line.p2;
-	}
-};
+Point::Point(double x, double y) {
+	first = x;
+	second = y;
+}
+Point Point::operator - (const Point& p) {
+	return Point(first - p.first, second - p.second);
+}
+bool Point::operator ==(const Point& p)const {
+	return dcmp(first - p.first) == 0 && dcmp(second - p.second) == 0;
+}
+void Point::operator=(const Point& point) {
+	first = point.first;
+	second = point.second;
+}
+Point Point::operator/(const double& d) {
+	return Point(first / d, second / d);
+}
+bool Point::operator<(const Point& p)const {
+	return dcmp(first - p.first) == 0 ? dcmp(second - p.second) < 0 : dcmp(first - p.first) < 0;
+}
 
 Line::Line(Point src, Point dst) {
 	a = src.second - dst.second;
@@ -79,32 +46,29 @@ Line::Line(Point src, Point dst) {
 	p2 = dst;
 	e = (p2 - p1) / length(p2-p1);
 }
-
+void Line::operator=(const Line& line) {
+	a = line.a;
+	b = line.b;
+	c = line.c;
+	e = line.e;
+	p1 = line.p1;
+	p2 = line.p2;
+}
 int Line::getIntersection_ll(set<Point>* intersections, Line l1, Line l2) {
 	double D = l1.a * l2.b - l2.a * l1.b;
 	if (D == 0) return 0;
 	Point p = { (l1.b * l2.c - l2.b * l1.c) / D, (l2.a * l1.c - l1.a * l2.c) / D };
-	p.first = (float)p.first;
-	p.second = (float)p.second;
+	//p.first = (float)p.first;
+	//p.second = (float)p.second;
 	intersections->insert(p);
 	return 1;
 }
 
-class Circle {
-public:
-	Point c;
-	double r;
-
-	Circle() {}
-	Circle(Point c, double r) :c(c), r(r) {}
-	void operator=(const Circle& circle) {
-		c.first = circle.c.first;
-		c.second = circle.c.second;
-		r = circle.r;
-	}
-	int getIntersection_cc(set<Point>* intersections, Circle c1, Circle c2);
-};
-
+void Circle::operator=(const Circle& circle) {
+	c.first = circle.c.first;
+	c.second = circle.c.second;
+	r = circle.r;
+}
 int Circle::getIntersection_cc(set<Point>* intersections, Circle c1, Circle c2) {
 	double r1 = c1.r, r2 = c2.r;
 	double x1 = c1.c.first, x2 = c2.c.first, y1 = c1.c.second, y2 = c2.c.second;
@@ -128,8 +92,8 @@ int Circle::getIntersection_cc(set<Point>* intersections, Circle c1, Circle c2) 
 		sina = sqrt(1 - sqr(cosa));
 		Point p(x1 + c1.r * cosa, y1 + c1.r * sina);
 		if (!onCircle(p, c2)) p.second = y1 - c1.r * sina;
-		p.first = (float)p.first;
-		p.second = (float)p.second;
+		//p.first = (float)p.first;
+		//p.second = (float)p.second;
 		intersections->insert(p);
 		return 1;
 	}
@@ -144,10 +108,10 @@ int Circle::getIntersection_cc(set<Point>* intersections, Circle c1, Circle c2) 
 	if (!onCircle(p1, c2)) p1.second = y1 - c1.r * sina;
 	if (!onCircle(p2, c2)) p2.second = y1 - c1.r * sinb;
 	if (p1 == p2) p1.second = y1 - c1.r * sina;
-	p1.first = (float)p1.first;
-	p1.second = (float)p1.second;
-	p2.first = (float)p2.first;
-	p2.second = (float)p2.second;
+	//p1.first = (float)p1.first;
+	//p1.second = (float)p1.second;
+	//p2.first = (float)p2.first;
+	//p2.second = (float)p2.second;
 	intersections->insert(p1);
 	intersections->insert(p2);
 	return 2;
@@ -171,7 +135,7 @@ double length(Point a) {	//向量长度
 }
 
 bool onCircle(Point p, Circle c) {
-	return dot(p - c.c, p - c.c) == sqr(c.r);
+	return dcmp(dot(p - c.c, p - c.c) - sqr(c.r)) == 0;
 }
 
 double disLine(Point p, Line l) {		//点到直线距离
@@ -198,15 +162,15 @@ Point prxy(Circle c, Line l) {
 }
 
 int getIntersection_cl(set<Point>* intersections, Circle c, Line l) {
-	if (dcmp(disLine(c.c, l) - c.r) == 0) { return 0; }
+	if (dcmp(disLine(c.c, l) - c.r) > 0) { return 0; }
 	Point Base = vbase(c, l);
 	Point pr = prxy(c, l);
 	Point inter1 = { Base.first + pr.first, Base.second + pr.second };
 	Point inter2 = { pr.first - Base.first, pr.second - Base.second };
-	inter1.first = (float)inter1.first;
-	inter1.second = (float)inter1.second;
-	inter2.first = (float)inter2.first;
-	inter2.second = (float)inter2.second;
+	//inter1.first = (float)inter1.first;
+	//inter1.second = (float)inter1.second;
+	//inter2.first = (float)inter2.first;
+	//inter2.second = (float)inter2.second;
 	if (inter1 == inter2) {
 		intersections->insert(inter1);
 		return 1;
@@ -254,8 +218,8 @@ int main(int argc, char** argv)
 	vector<Geometry> geomrties;
 	ifstream fin(argv[2]);
 	ofstream fout(argv[4]);
-	//ifstream fin("input3.txt");
-	//ofstream fout("output3.txt");
+	//ifstream fin("input.txt");
+	//ofstream fout("output.txt");
 	ofstream fpoint("point.txt");
 	if (!fin) {
 		cout << "文件打开失败!" << endl;
@@ -287,7 +251,7 @@ int main(int argc, char** argv)
 	}
 
 	set<Point> intersections;
-	for (int i = 0; i < geomrties.size(); i++) {
+	for (int i = 0; i < (int)(geomrties.size()); i++) {
 		for (int j = 0; j < i; j++) {
 			if (geomrties[i].Gflag == L && geomrties[j].Gflag == L) {
 				Line l1, l2;
